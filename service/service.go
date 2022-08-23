@@ -8,7 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	wsDeliver "github.com/aditya37/geospatial-stream/delivery/websocket"
 	"github.com/aditya37/geospatial-stream/infra"
+	channel "github.com/aditya37/geospatial-stream/repository/channel"
 	gcppubsub "github.com/aditya37/geospatial-stream/repository/gcppubsub"
 	geofencing "github.com/aditya37/geospatial-stream/usecase/geofencing"
 	getenv "github.com/aditya37/get-env"
@@ -49,8 +51,16 @@ func NewService() (Service, error) {
 		return nil, err
 	}
 
+	// channel repo
+	avgMobilityChan := channel.NewStreamMobilityAvg()
+	go avgMobilityChan.Run()
+
 	// usecase
-	geofencingCase := geofencing.NewGefencingUsecase(gcppubsubRepo)
+	geofencingCase := geofencing.NewGefencingUsecase(
+		gcppubsubRepo,
+		avgMobilityChan,
+	)
+
 	// async...
 	go geofencingCase.SubscribeGeofencingDetect(
 		ctx,
@@ -58,8 +68,12 @@ func NewService() (Service, error) {
 		"geospatial-stream",
 	)
 
+	// deliver...
+	geofencingWsDeliv := wsDeliver.NewWebsocketGeofencing(geofencingCase, avgMobilityChan)
+
 	// http handler...
-	httpHandler := NewHttpHandler()
+	httpHandler := NewHttpHandler(geofencingWsDeliv)
+
 	return &service{
 		close: func() {
 			log.Println("take break broh,,, everyrhing has been closed")
