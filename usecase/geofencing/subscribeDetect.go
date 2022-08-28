@@ -24,6 +24,7 @@ func (gc *GeofencingCase) SubscribeGeofencingDetect(ctx context.Context, topicNa
 	return nil
 }
 
+//
 func (gc *GeofencingCase) processMessageGeofencingDetect(ctx context.Context, msg repository.PubsubMessage) {
 	var payload detect.NotifyGeofencingPayload
 	if err := json.Unmarshal(msg.GetMessage(), &payload); err != nil {

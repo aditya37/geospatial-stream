@@ -33,9 +33,12 @@ func (sm *StreamtMobilityAvg) Run() {
 		select {
 		case data := <-sm.avgMobility:
 			sm.StreamAvgMobility <- &data
-		case <-sm.Close:
-			// clean up resource
-			sm.StreamAvgMobility <- &entity.AvgMobility{}
+		case c := <-sm.Close:
+			if c == true {
+				sm.StreamAvgMobility <- &entity.AvgMobility{}
+			} else {
+				continue
+			}
 		}
 	}
 }

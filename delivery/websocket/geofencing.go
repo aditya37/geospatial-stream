@@ -2,9 +2,9 @@ package websocket
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
+	geofence_logger "github.com/aditya37/geofence-service/util"
 	"github.com/aditya37/geospatial-stream/repository/channel"
 	"github.com/aditya37/geospatial-stream/usecase/geofencing"
 	gws "github.com/gorilla/websocket"
@@ -36,29 +36,50 @@ func NewWebsocketGeofencing(
 func (gwd *GeofencingWebsocketDeliver) StreamtMobilityAvg(w http.ResponseWriter, r *http.Request) {
 	wsconn, err := gwd.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println("ini error =>", err)
+		geofence_logger.Logger().Error(err)
 		return
 	}
-
+	// Reader...
+	go gwd.readSocketMobilityAvg(wsconn)
+	// writer...
 	go gwd.writeSocketMobilityAvg(wsconn)
 
 }
 
-// write or send to client socket...
-func (gwd *GeofencingWebsocketDeliver) writeSocketMobilityAvg(conn *gws.Conn) {
+// read..
+func (gwd *GeofencingWebsocketDeliver) readSocketMobilityAvg(conn *gws.Conn) {
 	defer func() {
-		log.Println("End Write...")
+		// clear resource...
 		conn.Close()
 		gwd.channelStream.Close <- true
 	}()
+	for {
+		if _, _, err := conn.NextReader(); err != nil {
+			geofence_logger.Logger().Error(err)
+			return
+		}
+	}
+}
+
+// write or send to client socket...
+func (gwd *GeofencingWebsocketDeliver) writeSocketMobilityAvg(conn *gws.Conn) {
+	// start write
+	gwd.channelStream.Close <- false
+
+	defer func() {
+		geofence_logger.Logger().Info("CLose write...")
+		conn.Close()
+	}()
+
 	for {
 		select {
 		case msg := <-gwd.channelStream.StreamAvgMobility:
 			j, _ := json.Marshal(msg)
 			if err := conn.WriteMessage(gws.TextMessage, j); err != nil {
-				log.Println("err write", err)
+				geofence_logger.Logger().Error(err)
 				return
 			}
+
 		}
 	}
 }
