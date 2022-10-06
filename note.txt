@@ -1,0 +1,5 @@
+- input validation param
+- never expose url
+- timestap request 50 - 20 sec
+- encrypt param location_id & sub_location
+
