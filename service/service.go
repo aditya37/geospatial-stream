@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	sseDeliver "github.com/aditya37/geospatial-stream/delivery/sse"
 	wsDeliver "github.com/aditya37/geospatial-stream/delivery/websocket"
 	"github.com/aditya37/geospatial-stream/infra"
 	channel "github.com/aditya37/geospatial-stream/repository/channel"
@@ -62,6 +63,10 @@ func NewService() (Service, error) {
 	deviceLogsChan := channel.NewStreamDeviceLogs(1024)
 	go deviceLogsChan.Run()
 
+	// geofence Detect...
+	geofenceDetectChan := channel.NewStreamGeofenceDetect()
+	go geofenceDetectChan.Run()
+
 	// grpcDialOpt..
 	grpcDialtOpt := []grpc.DialOption{}
 	grpcDialtOpt = append(grpcDialtOpt, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -79,6 +84,7 @@ func NewService() (Service, error) {
 	geofencingCase := geofencing.NewGefencingUsecase(
 		gcppubsubRepo,
 		avgMobilityChan,
+		geofenceDetectChan,
 	)
 	deviceManagerCase := deviceCase.NewDeviceManagerUsecase(
 		gcppubsubRepo,
@@ -97,7 +103,7 @@ func NewService() (Service, error) {
 		getenv.GetString("DEVICE_LOG_STREAM_TOPIC", "stream-device-logs"),
 		"geospatial-stream",
 	)
-	// deliver...
+	// Socket Deliver...
 	geofencingWsDeliv := wsDeliver.NewWebsocketGeofencing(geofencingCase, avgMobilityChan)
 	deviceWsDeliv := wsDeliver.NewDeviceWebsocketDeliver(
 		getenv.GetInt("INTERVAL_TICKER_TRIGGER_DEVICE_LOGS", 2),
@@ -105,8 +111,15 @@ func NewService() (Service, error) {
 		deviceLogsChan,
 	)
 
+	// SSE Deliver...
+	geofenceSSEDeliver := sseDeliver.NewSSEGeofencingDelivery(geofenceDetectChan)
+
 	// http handler...
-	httpHandler := NewHttpHandler(geofencingWsDeliv, deviceWsDeliv)
+	httpHandler := NewHttpHandler(
+		geofencingWsDeliv,
+		deviceWsDeliv,
+		geofenceSSEDeliver,
+	)
 
 	return &service{
 		close: func() {

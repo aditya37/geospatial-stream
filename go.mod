@@ -8,7 +8,7 @@ require (
 	cloud.google.com/go/iam v0.3.0 // indirect
 	cloud.google.com/go/pubsub v1.25.1 // indirect
 	github.com/aditya37/api-contract v0.0.0-20220821073221-cc05900f970a // indirect
-	github.com/aditya37/geofence-service v0.0.0-20220824074610-35c7cf8c133d // indirect
+	github.com/aditya37/geofence-service v0.0.0-20220918142620-d973472ef7de // indirect
 	github.com/aditya37/geospatial-tracking v0.0.0-20220826190809-344c7ec0c35a // indirect
 	github.com/aditya37/get-env v0.0.0-20220409152532-eba7a73ece1f // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.1 // indirect
@@ -27,6 +27,7 @@ require (
 	github.com/paulmach/go.geojson v1.4.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pressly/goose v2.7.0+incompatible // indirect
+	github.com/rs/cors v1.8.2 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/soheilhy/cmux v0.1.5 // indirect
 	github.com/tidwall/geoindex v1.4.4 // indirect

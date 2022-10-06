@@ -6,16 +6,19 @@ import (
 )
 
 type GeofencingCase struct {
-	pubsubManager     repository.PubsubManager
-	avgMobilityStream *channel.StreamtMobilityAvg
+	pubsubManager      repository.PubsubManager
+	avgMobilityStream  *channel.StreamtMobilityAvg
+	geofenceDetectChan *channel.ChannelStreamGeofencDetect
 }
 
 func NewGefencingUsecase(
 	pubsubManager repository.PubsubManager,
 	avgMobilityStream *channel.StreamtMobilityAvg,
+	geofenceDetectChan *channel.ChannelStreamGeofencDetect,
 ) *GeofencingCase {
 	return &GeofencingCase{
-		pubsubManager:     pubsubManager,
-		avgMobilityStream: avgMobilityStream,
+		pubsubManager:      pubsubManager,
+		avgMobilityStream:  avgMobilityStream,
+		geofenceDetectChan: geofenceDetectChan,
 	}
 }

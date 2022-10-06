@@ -9,6 +9,8 @@ import (
 	geofence_util "github.com/aditya37/geofence-service/util"
 	"github.com/aditya37/geospatial-stream/entity"
 	"github.com/aditya37/geospatial-stream/repository"
+	"github.com/aditya37/geospatial-stream/repository/channel"
+	internal_usecase "github.com/aditya37/geospatial-stream/usecase"
 )
 
 func (gc *GeofencingCase) SubscribeGeofencingDetect(ctx context.Context, topicName, servicename string) error {
@@ -32,6 +34,11 @@ func (gc *GeofencingCase) processMessageGeofencingDetect(ctx context.Context, ms
 		return
 	}
 
+	// set sseData...
+	if isSetSSEData := gc.setSSEEventData(payload); !isSetSSEData {
+		geofence_util.Logger().Info("channel nil")
+	}
+
 	// set to channel for stream websocket
 	go gc.avgMobilityStream.SetToChannel(entity.AvgMobility{
 		Inside: payload.Mobility.DailyAverage.Inside,
@@ -40,4 +47,28 @@ func (gc *GeofencingCase) processMessageGeofencingDetect(ctx context.Context, ms
 	})
 
 	msg.Ack()
+}
+
+// setSSEEventData...
+func (gc *GeofencingCase) setSSEEventData(payload detect.NotifyGeofencingPayload) bool {
+	if theChan := gc.geofenceDetectChan.Get(payload.Type); theChan != nil {
+
+		// assert response
+		resp := internal_usecase.ResponseSSEDetectGeofence{
+			Point:       payload.Object,
+			Detect:      payload.Detect,
+			ChannelName: payload.ChannelName,
+			DeviceId:    payload.DeviceId,
+		}
+		j, _ := json.Marshal(resp)
+		gc.geofenceDetectChan.Send(
+			channel.Message{
+				Type: payload.Type,
+				Data: j,
+			},
+		)
+		return true
+	} else {
+		return false
+	}
 }
