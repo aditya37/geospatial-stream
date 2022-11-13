@@ -45,6 +45,7 @@ func (h *httpHandler) Handler() http.Handler {
 
 	// websocket...
 	h.muxRouter.Methods(http.MethodGet).Path("/ws/geofencing/mobility/avg").HandlerFunc(h.geofencingSocket.StreamtMobilityAvg)
+	h.muxRouter.Methods(http.MethodGet).Path("/ws/geofencing/channel/{channel_name}").HandlerFunc(h.geofencingSocket.StreamtGetGeofenceByChannel)
 	h.muxRouter.Methods(http.MethodGet).Path("/ws/devices/logs").HandlerFunc(h.deviceSocket.StreamDeviceLogs)
 
 	// SSE Geofence service..

@@ -11,14 +11,16 @@ import (
 )
 
 type GeofencingWebsocketDeliver struct {
-	geofencingCase *geofencing.GeofencingCase
-	upgrader       gws.Upgrader
-	channelStream  *channel.StreamtMobilityAvg
+	geofencingCase              *geofencing.GeofencingCase
+	upgrader                    gws.Upgrader
+	channelStream               *channel.StreamtMobilityAvg
+	chanStreamGeofenceByChannel *channel.StreamGetGeofenceByChannel
 }
 
 func NewWebsocketGeofencing(
 	geofencingCase *geofencing.GeofencingCase,
 	channel *channel.StreamtMobilityAvg,
+	chanStreamGeofenceByChannel *channel.StreamGetGeofenceByChannel,
 ) *GeofencingWebsocketDeliver {
 	socketUpgrader := gws.Upgrader{
 		ReadBufferSize:  1024,
@@ -26,9 +28,10 @@ func NewWebsocketGeofencing(
 		CheckOrigin:     func(r *http.Request) bool { return true },
 	}
 	return &GeofencingWebsocketDeliver{
-		geofencingCase: geofencingCase,
-		upgrader:       socketUpgrader,
-		channelStream:  channel,
+		geofencingCase:              geofencingCase,
+		upgrader:                    socketUpgrader,
+		channelStream:               channel,
+		chanStreamGeofenceByChannel: chanStreamGeofenceByChannel,
 	}
 }
 

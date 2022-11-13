@@ -89,6 +89,8 @@ github.com/aditya37/geofence-service v0.0.0-20220918142620-d973472ef7de h1:WTAlN
 github.com/aditya37/geofence-service v0.0.0-20220918142620-d973472ef7de/go.mod h1:oiF/qV/QPsYhezOR+iLxSZZbrTWxMOk78LzDdtL8p7I=
 github.com/aditya37/geospatial-tracking v0.0.0-20220826190809-344c7ec0c35a h1:/rijOJ0BR8EKAeFv59kAhbg17cFvhcUQr1MIbjKLDec=
 github.com/aditya37/geospatial-tracking v0.0.0-20220826190809-344c7ec0c35a/go.mod h1:XRZwZZgkkzWh7z/22y0E5vjMFtJlB7/myBkfcHaRd78=
+github.com/aditya37/geospatial-tracking v0.0.0-20221021125516-e10048c5b11a h1:fej0fIRdw1lKzNp0ZeA/RCHDtCuiGrIi0K/z0tqyEn8=
+github.com/aditya37/geospatial-tracking v0.0.0-20221021125516-e10048c5b11a/go.mod h1:XRZwZZgkkzWh7z/22y0E5vjMFtJlB7/myBkfcHaRd78=
 github.com/aditya37/get-env v0.0.0-20220409152532-eba7a73ece1f h1:VDMTpXahmZ8RrxLpuF1L6d+i8XEtin7iNCyyus/MUCI=
 github.com/aditya37/get-env v0.0.0-20220409152532-eba7a73ece1f/go.mod h1:8cVm2QnSpJXDXGbrNt4V9qC5+gEAGq3+V99FaQv9b2A=
 github.com/antihax/optional v1.0.0/go.mod h1:uupD/76wgC+ih3iEmQUL+0Ugr19nfwCT1kdvxnR2qWY=
