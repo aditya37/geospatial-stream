@@ -38,7 +38,7 @@ func NewStreamGeofenceDetect() *ChannelStreamGeofencDetect {
 	}
 }
 
-// set data
+// register client...
 func (cd *ChannelStreamGeofencDetect) Set(data *Client) {
 	cd.mutex.Lock()
 	cd.register <- data

@@ -9,7 +9,7 @@ require (
 	cloud.google.com/go/pubsub v1.25.1 // indirect
 	github.com/aditya37/api-contract v0.0.0-20220821073221-cc05900f970a // indirect
 	github.com/aditya37/geofence-service v0.0.0-20220918142620-d973472ef7de // indirect
-	github.com/aditya37/geospatial-tracking v0.0.0-20220826190809-344c7ec0c35a // indirect
+	github.com/aditya37/geospatial-tracking v0.0.0-20221021125516-e10048c5b11a // indirect
 	github.com/aditya37/get-env v0.0.0-20220409152532-eba7a73ece1f // indirect
 	github.com/eclipse/paho.mqtt.golang v1.4.1 // indirect
 	github.com/go-redis/redis/v7 v7.4.1 // indirect

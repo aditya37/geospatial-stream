@@ -67,6 +67,10 @@ func NewService() (Service, error) {
 	geofenceDetectChan := channel.NewStreamGeofenceDetect()
 	go geofenceDetectChan.Run()
 
+	// Stream Get Geofence By ChannelName
+	channGetGeofenceByChann := channel.NewStreamGeofenceByChannel()
+	go channGetGeofenceByChann.Run()
+
 	// grpcDialOpt..
 	grpcDialtOpt := []grpc.DialOption{}
 	grpcDialtOpt = append(grpcDialtOpt, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -85,6 +89,8 @@ func NewService() (Service, error) {
 		gcppubsubRepo,
 		avgMobilityChan,
 		geofenceDetectChan,
+		channGetGeofenceByChann,
+		geotrackingSvc,
 	)
 	deviceManagerCase := deviceCase.NewDeviceManagerUsecase(
 		gcppubsubRepo,
@@ -103,8 +109,13 @@ func NewService() (Service, error) {
 		getenv.GetString("DEVICE_LOG_STREAM_TOPIC", "stream-device-logs"),
 		"geospatial-stream",
 	)
+
 	// Socket Deliver...
-	geofencingWsDeliv := wsDeliver.NewWebsocketGeofencing(geofencingCase, avgMobilityChan)
+	geofencingWsDeliv := wsDeliver.NewWebsocketGeofencing(
+		geofencingCase,
+		avgMobilityChan,
+		channGetGeofenceByChann,
+	)
 	deviceWsDeliv := wsDeliver.NewDeviceWebsocketDeliver(
 		getenv.GetInt("INTERVAL_TICKER_TRIGGER_DEVICE_LOGS", 2),
 		deviceManagerCase,
